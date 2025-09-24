@@ -27,7 +27,19 @@ public class SCIMDefinitions {
      */
     public static enum DataType {
         STRING, BOOLEAN, DECIMAL, INTEGER, DATE_TIME, BINARY, REFERENCE, COMPLEX,
-        // non-SCIM standard data types
+        /**
+         * Non-SCIM standard data types included for extended functionality.
+         * <p>
+         * <b>DATE</b>: Represents a date value without time or timezone information.
+         * This is not part of the official SCIM specification, but may be used in custom schemas
+         * where only a date (e.g., birthdate) is required.
+         * <br>
+         * <b>EPOCH</b>: Represents a timestamp as the number of seconds or milliseconds since the Unix epoch.
+         * This is also not part of the official SCIM specification, but may be used in custom schemas
+         * where epoch-based time representation is preferred.
+         * <br>
+         * Use these types only when extending SCIM schemas for application-specific requirements.
+         */
         DATE, EPOCH
     }
 
