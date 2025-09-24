@@ -26,7 +26,9 @@ public class SCIMDefinitions {
      * data types that an attribute can take, according to the SCIM spec.
      */
     public static enum DataType {
-        STRING, BOOLEAN, DECIMAL, INTEGER, DATE_TIME, BINARY, REFERENCE, COMPLEX
+        STRING, BOOLEAN, DECIMAL, INTEGER, DATE_TIME, BINARY, REFERENCE, COMPLEX,
+        // non-SCIM standard data types
+        DATE, EPOCH
     }
 
     /**
