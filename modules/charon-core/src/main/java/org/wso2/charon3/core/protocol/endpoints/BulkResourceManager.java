@@ -120,12 +120,11 @@ public class BulkResourceManager extends AbstractResourceManager {
 
     public SCIMResponse getEncodeSCIMResponse(BulkResponseData bulkResponseData) throws InternalErrorException {
 
-        //encode the BulkResponseData object
+        // Encode the BulkResponseData object.
         String finalEncodedResponse = encoder.encodeBulkResponseData(bulkResponseData);
 
-        // Create SCIM response message.
         Map<String, String> responseHeaders = new HashMap<>();
-        //add location header
+        // Add content type header.
         responseHeaders.put(SCIMConstants.CONTENT_TYPE_HEADER, SCIMConstants.APPLICATION_JSON);
 
         // Create the final response.
