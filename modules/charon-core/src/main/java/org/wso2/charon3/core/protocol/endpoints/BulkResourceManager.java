@@ -70,51 +70,75 @@ public class BulkResourceManager extends AbstractResourceManager {
 
     public SCIMResponse processBulkData(String data, UserManager userManager) {
 
-        BulkResponseData bulkResponseData;
         try {
-            // Get encoder and decoder from AbstractResourceEndpoint
-            encoder = getEncoder();
-            decoder = getDecoder();
-
-            BulkRequestData bulkRequestDataObject;
             // Decode the request.
-            bulkRequestDataObject = decoder.decodeBulkData(data);
+            BulkRequestData bulkRequestDataObject = getDecodeBulkRequest(data);
 
-            bulkRequestProcessor.setFailOnError(bulkRequestDataObject.getFailOnErrors());
-            bulkRequestProcessor.setUserManager(userManager);
+            BulkResponseData bulkResponseData = processBulkData(bulkRequestDataObject, userManager);
+            return getEncodeSCIMResponse(bulkResponseData);
 
-            int maxOperationCount =
-                    (Integer) CharonConfiguration.getInstance().getConfig().get(SCIMConfigConstants.MAX_OPERATIONS);
-            int totalOperationCount = bulkRequestDataObject.getUserOperationRequests().size() +
-                    bulkRequestDataObject.getGroupOperationRequests().size() +
-                    bulkRequestDataObject.getRoleOperationRequests().size() +
-                    bulkRequestDataObject.getRoleV2OperationRequests().size();
-            if (totalOperationCount > maxOperationCount) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(String.format(ResponseCodeConstants.ERROR_DESC_MAX_OPERATIONS_EXCEEDED,
-                            totalOperationCount, maxOperationCount));
-                }
-                throw new PayloadTooLargeException(
-                        String.format(ResponseCodeConstants.ERROR_DESC_MAX_OPERATIONS_EXCEEDED,
-                                totalOperationCount, maxOperationCount));
-            }
-
-            // Get bulk response data.
-            bulkResponseData = bulkRequestProcessor.processBulkRequests(bulkRequestDataObject);
-            //encode the BulkResponseData object
-            String finalEncodedResponse = encoder.encodeBulkResponseData(bulkResponseData);
-
-            // Create SCIM response message.
-            Map<String, String> responseHeaders = new HashMap<>();
-            //add location header
-            responseHeaders.put(SCIMConstants.CONTENT_TYPE_HEADER, SCIMConstants.APPLICATION_JSON);
-
-            // Create the final response.
-            return new SCIMResponse(ResponseCodeConstants.CODE_OK, finalEncodedResponse, responseHeaders);
-
-        } catch (CharonException | BadRequestException | InternalErrorException | PayloadTooLargeException e) {
+        } catch (CharonException | BadRequestException | PayloadTooLargeException | InternalErrorException e) {
             return AbstractResourceManager.encodeSCIMException(e);
         }
+    }
+
+    public BulkResponseData processBulkData(BulkRequestData bulkRequestDataObject, UserManager userManager,
+                                            RoleManager roleManager, RoleV2Manager roleV2Manager)
+            throws CharonException, PayloadTooLargeException, BadRequestException {
+
+        bulkRequestProcessor.setRoleManager(roleManager);
+        bulkRequestProcessor.setRoleV2Manager(roleV2Manager);
+        return processBulkData(bulkRequestDataObject, userManager);
+    }
+
+    public BulkResponseData processBulkData(BulkRequestData bulkRequestDataObject, UserManager userManager)
+            throws CharonException, PayloadTooLargeException, BadRequestException {
+
+
+        encoder = getEncoder();
+        bulkRequestProcessor.setFailOnError(bulkRequestDataObject.getFailOnErrors());
+        bulkRequestProcessor.setUserManager(userManager);
+
+        int maxOperationCount =
+                (Integer) CharonConfiguration.getInstance().getConfig().get(SCIMConfigConstants.MAX_OPERATIONS);
+        int totalOperationCount = bulkRequestDataObject.getUserOperationRequests().size() +
+                bulkRequestDataObject.getGroupOperationRequests().size() +
+                bulkRequestDataObject.getRoleOperationRequests().size() +
+                bulkRequestDataObject.getRoleV2OperationRequests().size();
+        if (totalOperationCount > maxOperationCount) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format(ResponseCodeConstants.ERROR_DESC_MAX_OPERATIONS_EXCEEDED,
+                        totalOperationCount, maxOperationCount));
+            }
+            throw new PayloadTooLargeException(
+                    String.format(ResponseCodeConstants.ERROR_DESC_MAX_OPERATIONS_EXCEEDED,
+                            totalOperationCount, maxOperationCount));
+        }
+
+        // Get bulk response data.
+        return bulkRequestProcessor.processBulkRequests(bulkRequestDataObject);
+
+    }
+
+    public BulkRequestData getDecodeBulkRequest(String data) throws CharonException, BadRequestException {
+
+        decoder = getDecoder();
+        // Decode the request.
+        return decoder.decodeBulkData(data);
+    }
+
+    public SCIMResponse getEncodeSCIMResponse(BulkResponseData bulkResponseData) throws InternalErrorException {
+
+        //encode the BulkResponseData object
+        String finalEncodedResponse = encoder.encodeBulkResponseData(bulkResponseData);
+
+        // Create SCIM response message.
+        Map<String, String> responseHeaders = new HashMap<>();
+        //add location header
+        responseHeaders.put(SCIMConstants.CONTENT_TYPE_HEADER, SCIMConstants.APPLICATION_JSON);
+
+        // Create the final response.
+        return new SCIMResponse(ResponseCodeConstants.CODE_OK, finalEncodedResponse, responseHeaders);
     }
 
 
