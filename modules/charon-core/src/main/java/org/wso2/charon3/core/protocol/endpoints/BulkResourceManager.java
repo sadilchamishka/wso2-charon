@@ -141,6 +141,13 @@ public class BulkResourceManager extends AbstractResourceManager {
         return new SCIMResponse(ResponseCodeConstants.CODE_OK, finalEncodedResponse, responseHeaders);
     }
 
+    public BulkRequestData getDecodeBulkRequest(String data) throws CharonException, BadRequestException {
+
+        decoder = getDecoder();
+        // Decode the request.
+        return decoder.decodeBulkData(data);
+    }
+
 
     @Override
     public SCIMResponse get(String id, UserManager userManager, String attributes, String excludeAttributes) {
