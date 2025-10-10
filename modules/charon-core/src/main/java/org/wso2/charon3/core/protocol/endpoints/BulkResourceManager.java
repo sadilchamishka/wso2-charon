@@ -94,7 +94,6 @@ public class BulkResourceManager extends AbstractResourceManager {
     public BulkResponseData processBulkData(BulkRequestData bulkRequestDataObject, UserManager userManager)
             throws CharonException, PayloadTooLargeException, BadRequestException {
 
-
         encoder = getEncoder();
         bulkRequestProcessor.setFailOnError(bulkRequestDataObject.getFailOnErrors());
         bulkRequestProcessor.setUserManager(userManager);
@@ -117,14 +116,6 @@ public class BulkResourceManager extends AbstractResourceManager {
 
         // Get bulk response data.
         return bulkRequestProcessor.processBulkRequests(bulkRequestDataObject);
-
-    }
-
-    public BulkRequestData getDecodeBulkRequest(String data) throws CharonException, BadRequestException {
-
-        decoder = getDecoder();
-        // Decode the request.
-        return decoder.decodeBulkData(data);
     }
 
     public SCIMResponse getEncodeSCIMResponse(BulkResponseData bulkResponseData) throws InternalErrorException {
@@ -147,7 +138,6 @@ public class BulkResourceManager extends AbstractResourceManager {
         // Decode the request.
         return decoder.decodeBulkData(data);
     }
-
 
     @Override
     public SCIMResponse get(String id, UserManager userManager, String attributes, String excludeAttributes) {
