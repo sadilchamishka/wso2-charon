@@ -72,13 +72,10 @@ public class BulkResourceManager extends AbstractResourceManager {
 
         BulkResponseData bulkResponseData;
         try {
-            // Get encoder and decoder from AbstractResourceEndpoint
+            // decoder from AbstractResourceEndpoint
             encoder = getEncoder();
-            decoder = getDecoder();
-
-            BulkRequestData bulkRequestDataObject;
             // Decode the request.
-            bulkRequestDataObject = decoder.decodeBulkData(data);
+            BulkRequestData bulkRequestDataObject = getDecodeBulkRequest(data);
 
             bulkRequestProcessor.setFailOnError(bulkRequestDataObject.getFailOnErrors());
             bulkRequestProcessor.setUserManager(userManager);
@@ -115,6 +112,13 @@ public class BulkResourceManager extends AbstractResourceManager {
         } catch (CharonException | BadRequestException | InternalErrorException | PayloadTooLargeException e) {
             return AbstractResourceManager.encodeSCIMException(e);
         }
+    }
+
+    public BulkRequestData getDecodeBulkRequest(String data) throws CharonException, BadRequestException {
+
+        decoder = getDecoder();
+        // Decode the request.
+        return decoder.decodeBulkData(data);
     }
 
 
