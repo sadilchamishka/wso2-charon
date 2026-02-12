@@ -231,7 +231,7 @@ public class GroupResourceManagerTest {
         SCIMResourceTypeSchema schema = SCIMResourceSchemaManager.getInstance().getGroupResourceSchema();
         Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                 (SCIMResourceTypeSchema) CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
         abstractResourceManager.when(() -> AbstractResourceManager.getResourceEndpointURL(SCIMConstants.USER_ENDPOINT))
                 .thenReturn(SCIM2_GROUP_ENDPOINT);
@@ -303,7 +303,7 @@ public class GroupResourceManagerTest {
         Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                 (SCIMResourceTypeSchema)
                         CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
         abstractResourceManager.when(() -> AbstractResourceManager.getResourceEndpointURL(SCIMConstants.USER_ENDPOINT))
                 .thenReturn(SCIM2_GROUP_ENDPOINT);

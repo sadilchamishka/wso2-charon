@@ -94,7 +94,7 @@ public class GroupResourceManager extends AbstractResourceManager {
             Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                     (SCIMResourceTypeSchema)
                     CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
             //API user should pass a usermanager usermanager to GroupResourceEndpoint.
             //retrieve the group from the provided usermanager.
@@ -255,7 +255,7 @@ public class GroupResourceManager extends AbstractResourceManager {
             Map<String, Boolean> requiredAttributes = ResourceManagerUtil
                     .getOnlyRequiredAttributesURIs((SCIMResourceTypeSchema) CopyUtil.deepCopy(schema), attributes,
                             excludeAttributes);
-            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
             // API group should pass a user manager to GroupResourceEndpoint.
             if (userManager != null) {
@@ -366,7 +366,7 @@ public class GroupResourceManager extends AbstractResourceManager {
             Map<String, Boolean> requiredAttributes = ResourceManagerUtil
                     .getOnlyRequiredAttributesURIs((SCIMResourceTypeSchema) CopyUtil.deepCopy(schema), attributes,
                             excludeAttributes);
-            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
             // API group should pass a user manager to GroupResourceEndpoint.
             if (userManager != null) {
@@ -478,7 +478,7 @@ public class GroupResourceManager extends AbstractResourceManager {
                             CopyUtil.deepCopy(schema), searchRequest.getAttributesAsString(),
                     searchRequest.getExcludedAttributesAsString());
             ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes,
-                    searchRequest.getExcludedAttributesAsString());
+                    searchRequest.getExcludedAttributesAsString(), searchRequest.getAttributesAsString());
 
             List<Object> returnedGroups;
             int totalResults = 0;
@@ -546,7 +546,7 @@ public class GroupResourceManager extends AbstractResourceManager {
             Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                     (SCIMResourceTypeSchema)
                     CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
             //decode the SCIM User object, encoded in the submitted payload.
             Group group = (Group) decoder.decodeResource(scimObjectString, schema, new Group());
@@ -615,7 +615,7 @@ public class GroupResourceManager extends AbstractResourceManager {
 
             SCIMResourceTypeSchema schema = SCIMResourceSchemaManager.getInstance().getGroupResourceSchema();
             Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getAllAttributeURIs(schema);
-            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
             List<PatchOperation> opList = getDecoder().decodeRequest(patchRequest);
 
@@ -712,7 +712,7 @@ public class GroupResourceManager extends AbstractResourceManager {
             Map<String, Boolean> requiredAttributes =
                     ResourceManagerUtil.getOnlyRequiredAttributesURIs((SCIMResourceTypeSchema)
                             CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+            ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes, attributes);
 
             Group updatedGroup = userManager.patchGroup(existingGroupId, groupName, patchOperations,
                     requiredAttributes);

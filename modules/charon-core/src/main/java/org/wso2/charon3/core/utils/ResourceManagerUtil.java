@@ -549,9 +549,19 @@ public class ResourceManagerUtil {
      *
      * @param requiredAttributes  The required attributes list.
      * @param excludeAttributes The comma separated excluded attributes list which is passed by the user in the request.
+     * @param includedAttributes The comma separated included attributes list which is passed by the user in the
+     *                           request.
      */
-    public static void includeRolesUnlessExcluded(Map<String, Boolean> requiredAttributes, String excludeAttributes) {
+    public static void includeRolesUnlessExcluded(Map<String, Boolean> requiredAttributes, String excludeAttributes,
+                                                  String includedAttributes) {
 
+        if (StringUtils.isNotEmpty(includedAttributes)) {
+            String[] includedAttributesArray = includedAttributes.split(",");
+            if (Arrays.stream(includedAttributesArray)
+                    .noneMatch(SCIMConstants.GroupSchemaConstants.ROLES::equalsIgnoreCase)) {
+                return;
+            }
+        }
         if (requiredAttributes == null) {
             return;
         }
