@@ -257,7 +257,7 @@ public class GroupResourceManagerTest {
         SCIMResourceTypeSchema schema = SCIMResourceSchemaManager.getInstance().getGroupResourceSchema();
         Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                 (SCIMResourceTypeSchema) CopyUtil.deepCopy(schema), "", "");
-        requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
+        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, "", "");
         abstractResourceManager.when(() -> AbstractResourceManager.getResourceEndpointURL(SCIMConstants.USER_ENDPOINT))
                 .thenReturn(SCIM2_GROUP_ENDPOINT);
         Mockito.when(userManager.getGroup(id, requiredAttributes)).thenReturn(group);
