@@ -552,12 +552,16 @@ public class ResourceManagerUtil {
      */
     public static void includeRolesUnlessExcluded(Map<String, Boolean> requiredAttributes, String excludeAttributes) {
 
+        if (requiredAttributes == null) {
+            return;
+        }
         if (StringUtils.isEmpty(excludeAttributes)) {
             requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
             return;
         }
         String[] excludeAttributesArray = excludeAttributes.split(",");
-        if (!Arrays.asList(excludeAttributesArray).contains(SCIMConstants.GroupSchemaConstants.ROLES)) {
+        if (Arrays.stream(excludeAttributesArray)
+                .noneMatch(SCIMConstants.GroupSchemaConstants.ROLES::equalsIgnoreCase)) {
             requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
         }
     }
