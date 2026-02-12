@@ -16,10 +16,12 @@
 
 package org.wso2.charon3.core.utils;
 
+import org.apache.commons.lang.StringUtils;
 import org.wso2.charon3.core.config.CharonConfiguration;
 import org.wso2.charon3.core.exceptions.BadRequestException;
 import org.wso2.charon3.core.exceptions.CharonException;
 import org.wso2.charon3.core.schema.AttributeSchema;
+import org.wso2.charon3.core.schema.SCIMConstants;
 import org.wso2.charon3.core.schema.SCIMDefinitions;
 import org.wso2.charon3.core.schema.SCIMResourceTypeSchema;
 
@@ -539,5 +541,24 @@ public class ResourceManagerUtil {
             }
         }
         return simpleMultiValuedAttributes;
+    }
+
+    /**
+     * This method is to include the roles attribute in the required attributes list for group resource
+     * if it is not excluded by the user.
+     *
+     * @param requiredAttributes  The required attributes list.
+     * @param excludeAttributes The comma separated excluded attributes list which is passed by the user in the request.
+     */
+    public static void includeRolesUnlessExcluded(Map<String, Boolean> requiredAttributes, String excludeAttributes) {
+
+        if (StringUtils.isEmpty(excludeAttributes)) {
+            requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
+            return;
+        }
+        String[] excludeAttributesArray = excludeAttributes.split(",");
+        if (!Arrays.asList(excludeAttributesArray).contains(SCIMConstants.GroupSchemaConstants.ROLES)) {
+            requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
+        }
     }
 }

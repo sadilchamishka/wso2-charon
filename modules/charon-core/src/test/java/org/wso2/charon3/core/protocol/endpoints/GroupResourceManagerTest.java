@@ -231,9 +231,7 @@ public class GroupResourceManagerTest {
         SCIMResourceTypeSchema schema = SCIMResourceSchemaManager.getInstance().getGroupResourceSchema();
         Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                 (SCIMResourceTypeSchema) CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-        if (excludeAttributes == null || !excludeAttributes.contains(SCIMConstants.GroupSchemaConstants.ROLES)) {
-            requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
-        }
+        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
 
         abstractResourceManager.when(() -> AbstractResourceManager.getResourceEndpointURL(SCIMConstants.USER_ENDPOINT))
                 .thenReturn(SCIM2_GROUP_ENDPOINT);
@@ -305,9 +303,8 @@ public class GroupResourceManagerTest {
         Map<String, Boolean> requiredAttributes = ResourceManagerUtil.getOnlyRequiredAttributesURIs(
                 (SCIMResourceTypeSchema)
                         CopyUtil.deepCopy(schema), attributes, excludeAttributes);
-        if (excludeAttributes == null || !excludeAttributes.contains(SCIMConstants.GroupSchemaConstants.ROLES)) {
-            requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
-        }
+        ResourceManagerUtil.includeRolesUnlessExcluded(requiredAttributes, excludeAttributes);
+
         abstractResourceManager.when(() -> AbstractResourceManager.getResourceEndpointURL(SCIMConstants.USER_ENDPOINT))
                 .thenReturn(SCIM2_GROUP_ENDPOINT);
         abstractResourceManager.when(() -> AbstractResourceManager.encodeSCIMException(any(CharonException.class)))
