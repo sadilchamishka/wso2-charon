@@ -555,6 +555,8 @@ public class ResourceManagerUtil {
     public static void includeRolesUnlessExcluded(Map<String, Boolean> requiredAttributes, String excludeAttributes,
                                                   String includedAttributes) {
 
+        /* If the included attributes parameter is not empty, check whether it contains the roles attribute.
+           If not, return without including the roles attribute. */
         if (StringUtils.isNotEmpty(includedAttributes)) {
             String[] includedAttributesArray = includedAttributes.split(",");
             if (Arrays.stream(includedAttributesArray)
@@ -565,10 +567,16 @@ public class ResourceManagerUtil {
         if (requiredAttributes == null) {
             return;
         }
+
+        /* If the excluded attributes parameter is empty or does not contain the roles attribute, include the roles
+           attribute in the required attributes list. */
         if (StringUtils.isEmpty(excludeAttributes)) {
             requiredAttributes.put(SCIMConstants.GroupSchemaConstants.ROLES_URI, true);
             return;
         }
+
+        /* If the excluded attributes parameter is not empty, check whether it contains the roles attribute. If not,
+           include the roles attribute in the required attributes list. */
         String[] excludeAttributesArray = excludeAttributes.split(",");
         if (Arrays.stream(excludeAttributesArray)
                 .noneMatch(SCIMConstants.GroupSchemaConstants.ROLES::equalsIgnoreCase)) {
